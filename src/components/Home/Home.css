@@ -4,4 +4,22 @@
     position: relative;
 }
 
+#map-container{
+    height: 80vh;
+    width: 90vw;
+    margin: 0 auto;
+    margin-top: 15px;
+    border: 1px solid rgba(85, 128, 100, .5);
+}
+#add-location-bttn{
+    height: 50px;
+    width: 150px;
+    background: rgb(85, 128, 100);
+    margin: 0 auto;
+    display: block;
+    margin-top: 15px;
+    color: white;
+    font-size: 15px;
+}
+
 

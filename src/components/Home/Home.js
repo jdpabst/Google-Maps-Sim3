@@ -7,10 +7,9 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="home">
-
-          Home Page
-
+      <div id='home-container'>
+        <div id='map-container'></div>
+        <button id='add-location-bttn'>ADD LOCATION</button>
       </div>
     );
   }
