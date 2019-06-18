@@ -14,6 +14,7 @@ class Pin extends Component {
             transform: 'translate(-50%, -50%)'
           }}>
           <img src={this.props.img} alt="pin" />
+          {this.props.text}
         </div>
       );
     }
