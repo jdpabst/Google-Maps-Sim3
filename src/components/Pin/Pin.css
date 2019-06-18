@@ -1,0 +1,10 @@
+#pin-container{
+    height: auto;
+    width: auto;
+    display: block
+}
+#pin-container img{
+    height: 4vh;
+    width: auto;
+    
+}
