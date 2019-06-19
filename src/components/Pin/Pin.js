@@ -13,8 +13,6 @@ class Pin extends Component {
             borderRadius: '100%',
             transform: 'translate(-50%, -50%)'
           }}>
-          <img src={this.props.img} alt="pin" />
-          {this.props.text}
         </div>
       );
     }

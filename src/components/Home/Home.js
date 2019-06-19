@@ -8,40 +8,32 @@ import markerImg from '../../media/star.png'
 
 
 
-const handleApiLoaded = (map, maps, accuracy, center) => {
-  console.log('here in api function')
-  const accuracyRadius = new maps.Circle({
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35,
-    map: map,
-    center: center,
-    radius: accuracy
-  })
-  console.log(maps)
-}
+
 
 class Home extends Component {
   constructor(props){
     super(props);
 
     this.state = {
+      locations: [{
+        lat: 0,
+        lng: 0
+      }],
       location: '',
       lat: 0,
       lng: 0,
-      accuracy: 800,
+      accuracy: 854,
       defaultCenter: {
-        lat: 40.76,
-        lng: -111.89
+        lat: 40,
+        lng: 620
       },
-      defaultZoom: 4
+      defaultZoom: 3.5
     }
-    this.getGeolocation = this.getGeolocation.bind(this);
+    this.handleApiLoaded = this.handleApiLoaded.bind(this);
+    this.addLocation = this.addLocation.bind(this);
   }
 
-  getGeolocation(){
+  componentDidMount(){
     axios.post(URL.mapsURL).then(res => { 
       console.log(res.data)
       this.setState({
@@ -57,6 +49,27 @@ class Home extends Component {
     })
   }
 
+  addLocation(){
+    let arr = this.state.locations;
+    arr.push({lat: this.state.lat, lng: this.state.lng});
+    this.setState({
+      locations: arr
+    })
+  }
+
+
+  handleApiLoaded(map, maps, accuracy, center){
+    const accuracyRadius = new maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: center,
+      radius: accuracy
+    })
+  }
   
 
   render() {
@@ -70,19 +83,17 @@ class Home extends Component {
             bootstrapURLKeys={{ key: URL.mapsKey }}
             center={defaultCenter}
             defaultZoom={defaultZoom}
-            yesIWantToUseGoogleMapApiInternals
-            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps, accuracy, defaultCenter)}
+            yesIWantToUseGoogleMapApiInternals={true}
+            onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps, accuracy, defaultCenter)}
           >
             <Pin
               lat={lat}
               lng={lng}
-              img={markerImg}
-              text={`Location within a ${accuracy}m radius`}
             />
           </GoogleMapReact>
         </div>
         
-        <button id='add-location-bttn' onClick={this.getGeolocation} >ADD LOCATION</button>
+        <button id='add-location-bttn' onClick={this.addLocation} >ADD LOCATION</button>
       
       </div>
     );
