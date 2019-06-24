@@ -26,7 +26,8 @@ class Home extends Component {
         lat: 40,
         lng: 620
       },
-      defaultZoom: 10
+      defaultZoom: 10,
+      loaded: false
     }
     this.handleApiLoaded = this.handleApiLoaded.bind(this);
     this.addLocation = this.addLocation.bind(this);
@@ -44,6 +45,7 @@ class Home extends Component {
           lat: res.data.location.lat,
           lng: res.data.location.lng,
         },
+        loaded: true
       })
     })
     this.getLocations()
@@ -53,8 +55,8 @@ class Home extends Component {
     axios.get('/api/getLocations').then(res => {
       for(var i = 0; i < res.data.length; i++){
         res.data[i].center = {
-          lat: res.data[i].lat,
-          lng: res.data[i].lng
+          lat: parseInt(res.data[i].lat),
+          lng: parseInt(res.data[i].lng)
         }
       }
       this.setState({
@@ -73,41 +75,45 @@ class Home extends Component {
   }
 
 
-  handleApiLoaded(map, maps, accuracy, center){
+  handleApiLoaded(map, maps){
+    let {locations} = this.state;
     
     // map through the location objects on state. Example here --> https://developers.google.com/maps/documentation/javascript/shapes#circles
-    const accuracyRadius = new maps.Circle({
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map,
-      center: center,
-      radius: accuracy
-    })
+    for(var i = 0; i < locations.length; i++){
+      console.log(locations[i])
+      const accuracyRadius = new maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: locations[i].center,
+        radius: parseInt(locations[i].accuracy)
+      })
+    }
   }
   
 
   render() {
-    let {lat, lng, accuracy, defaultCenter, defaultZoom} = this.state;
+    let {defaultCenter, defaultZoom, loaded, locations} = this.state;
     
     return (
       <div id='home-container'>
 
         <div id='map-container'>
-          <GoogleMapReact
+          {loaded ? <GoogleMapReact
             bootstrapURLKeys={{ key: URL.mapsKey }}
             center={defaultCenter}
             defaultZoom={defaultZoom}
             yesIWantToUseGoogleMapApiInternals={true}
-            onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps, accuracy, defaultCenter)}
+            onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
           >
-            <Pin
-              lat={defaultCenter.lat}
-              lng={defaultCenter.lng}
-            />
-          </GoogleMapReact>
+            {/* {locations.map((location, id) => {
+              return <Pin key={id} lat={location.lat} lng={location.lng} />
+            })} */}
+          </GoogleMapReact> : <p>Loading...</p> }
+          
         </div>
         
         <button id='add-location-bttn' onClick={this.addLocation} >ADD LOCATION</button>

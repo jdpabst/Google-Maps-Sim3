@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Pin.css';
+import pin from '../../media/icon.png'
 
 class Pin extends Component {
   
@@ -13,7 +14,7 @@ class Pin extends Component {
             borderRadius: '100%',
             transform: 'translate(-50%, -50%)'
           }}>
-            <p>TITLE</p>
+            <img src={pin} alt='map marker'/>
         </div>
       );
     }
