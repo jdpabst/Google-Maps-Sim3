@@ -13,6 +13,7 @@ class Pin extends Component {
             borderRadius: '100%',
             transform: 'translate(-50%, -50%)'
           }}>
+            <p>TITLE</p>
         </div>
       );
     }

@@ -4,7 +4,6 @@ import GoogleMapReact from 'google-map-react';
 import URL from '../../config';
 import './Home.css';
 import Pin from '../Pin/Pin';
-import markerImg from '../../media/star.png'
 
 
 
@@ -27,15 +26,15 @@ class Home extends Component {
         lat: 40,
         lng: 620
       },
-      defaultZoom: 3.5
+      defaultZoom: 10
     }
     this.handleApiLoaded = this.handleApiLoaded.bind(this);
     this.addLocation = this.addLocation.bind(this);
+    this.getLocations = this.getLocations.bind(this);
   }
 
   componentDidMount(){
     axios.post(URL.mapsURL).then(res => { 
-      console.log(res.data)
       this.setState({
         location: res.data,
         lat: res.data.location.lat,
@@ -46,6 +45,22 @@ class Home extends Component {
           lng: res.data.location.lng,
         },
       })
+    })
+    this.getLocations()
+  }
+
+  getLocations(){
+    axios.get('/api/getLocations').then(res => {
+      for(var i = 0; i < res.data.length; i++){
+        res.data[i].center = {
+          lat: res.data[i].lat,
+          lng: res.data[i].lng
+        }
+      }
+      this.setState({
+        locations: res.data,
+      })
+      console.log(this.state.locations)
     })
   }
 
@@ -59,6 +74,8 @@ class Home extends Component {
 
 
   handleApiLoaded(map, maps, accuracy, center){
+    
+    // map through the location objects on state. Example here --> https://developers.google.com/maps/documentation/javascript/shapes#circles
     const accuracyRadius = new maps.Circle({
       strokeColor: '#FF0000',
       strokeOpacity: 0.8,
@@ -87,8 +104,8 @@ class Home extends Component {
             onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps, accuracy, defaultCenter)}
           >
             <Pin
-              lat={lat}
-              lng={lng}
+              lat={defaultCenter.lat}
+              lng={defaultCenter.lng}
             />
           </GoogleMapReact>
         </div>

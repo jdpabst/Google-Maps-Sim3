@@ -1,0 +1,7 @@
+create table locations(
+id serial primary key,
+LAT varchar(255),
+LNG varchar(255),
+accuracy varchar(255),
+TITLE varchar(255)
+)

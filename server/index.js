@@ -6,16 +6,17 @@ const config = require('./config.js');
 
 app.use(bodyParser.json());
 
-// massive(config.connection)
-// .then( db => {
-//   app.set('db', db);
-// })
+massive(config.connection)
+.then( db => {
+  app.set('db', db);
+})
 
 app.use(express.static(__dirname + './../build'))
 
-const userController = require("./userController.js");
+const mapLocations = require("./mapLocations.js");
 
-//////////Endpoints for the front end
+app.get('/api/getLocations', mapLocations.getLocations);
+app.post('/api/addLocation', mapLocations.addLocation);
 
 
 
