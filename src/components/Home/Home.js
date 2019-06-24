@@ -3,7 +3,7 @@ import axios from 'axios';
 import GoogleMapReact from 'google-map-react';
 import URL from '../../config';
 import './Home.css';
-import Pin from '../Pin/Pin';
+// import Pin from '../Pin/Pin';
 
 
 
@@ -22,6 +22,7 @@ class Home extends Component {
       lat: 0,
       lng: 0,
       accuracy: 854,
+      title: 'unspecified',
       defaultCenter: {
         lat: 40,
         lng: 620
@@ -55,32 +56,34 @@ class Home extends Component {
     axios.get('/api/getLocations').then(res => {
       for(var i = 0; i < res.data.length; i++){
         res.data[i].center = {
-          lat: parseInt(res.data[i].lat),
-          lng: parseInt(res.data[i].lng)
+          lat: parseFloat(res.data[i].lat),
+          lng: parseFloat(res.data[i].lng)
         }
       }
       this.setState({
         locations: res.data,
       })
-      console.log(this.state.locations)
     })
+    console.log(this.state.locations)
   }
 
   addLocation(){
-    let arr = this.state.locations;
-    arr.push({lat: this.state.lat, lng: this.state.lng});
-    this.setState({
-      locations: arr
-    })
+    let{ lat, lng, accuracy, title} = this.state;
+    console.log(lat)
+    axios.post('/api/addLocation', {lat, lng, accuracy, title})
+      .then( res => {
+        this.setState({
+          locations: [...this.state.locations, res.data]
+        })
+      })
+      console.log(this.state.locations);
   }
 
 
   handleApiLoaded(map, maps){
     let {locations} = this.state;
-    
-    // map through the location objects on state. Example here --> https://developers.google.com/maps/documentation/javascript/shapes#circles
     for(var i = 0; i < locations.length; i++){
-      console.log(locations[i])
+      console.log(locations[i].center)
       const accuracyRadius = new maps.Circle({
         strokeColor: '#FF0000',
         strokeOpacity: 0.8,
@@ -89,14 +92,14 @@ class Home extends Component {
         fillOpacity: 0.35,
         map: map,
         center: locations[i].center,
-        radius: parseInt(locations[i].accuracy)
+        radius: parseFloat(locations[i].accuracy)
       })
     }
   }
   
 
   render() {
-    let {defaultCenter, defaultZoom, loaded, locations} = this.state;
+    let {defaultCenter, defaultZoom, loaded} = this.state;
     
     return (
       <div id='home-container'>
